@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 class UserNotFoundException extends Exception {}
 
@@ -16,12 +15,15 @@ const USERS = [
 ];
 
 class UserRepository {
+    public function __construct(Logger $logger) {
+        $this->logger = $logger;
+    }
+
     public function findUser(string $id) {
         return USERS[$id] ?? null;
     }
 
     public function getUserById(string $id) {
-        $log = new Logger();
         try {
             $user = $this->findUser($id);
             if (!$user) {
@@ -29,20 +31,19 @@ class UserRepository {
             }
 
             return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
+            //Redundant catch
+        } catch (UserNotFoundException $e) {
+            // Log the error here
+            $this->logger->log($e->getMessage());
+            // Then rethrow to let the controller handle it too
+            throw $e;
         }
+        return null;
     }
 }
 
 class Controller {
-    public function getCurrentUser(string $id) : ?string 
+    public function getCurrentUser(string $id) : ?string
     {
         $log = new Logger();
         try {
@@ -51,7 +52,7 @@ class Controller {
             if (!$user) {
                 throw new UserNotFoundException();
             }
-            
+
             return $user;
         } catch (UserNotFoundException $e) {
             $log->log("Controller, $id user is not found !");
@@ -66,4 +67,5 @@ class Controller {
 }
 
 $main = new Controller();
-print_r($main->getCurrentUser(7));
+//Passing an integer (7), while getCurrentUser expects a string
+print_r($main->getCurrentUser("7"));
