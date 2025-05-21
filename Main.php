@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 class UserNotFoundException extends Exception {}
 
@@ -30,7 +31,7 @@ class UserRepository {
             return $user;
         } catch (UserNotFoundException $exception) {
             $log->log($exception->getMessage());
-            
+
             return null;
         } catch (Exception $exception) {
             $log->log($exception->getMessage());
