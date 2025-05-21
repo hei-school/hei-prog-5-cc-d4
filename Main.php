@@ -1,11 +1,23 @@
 <?php
 declare(strict_types=1);
 
-class UserNotFoundException extends Exception {}
+class UserNotFoundException extends Exception {
+    protected string $id;
+
+    public function __construct(string $id, string $message = "User not found", int $code = 0, Throwable $previous = null) {
+        parent::__construct($message, $code, $previous);
+        $this->id = $id;
+    }
+
+    public function errorMessage(): string {
+        return 'Error on line '.$this->getLine().' in '.$this->getFile()
+            .': '.$this->getMessage().' User with id '.$this->id.' not found!';
+    }
+}
 
 class Logger {
-    public function log(string $message) {
-        file_put_contents('error.log', $message.PHP_EOL, FILE_APPEND);
+    public function log(string $message): void {
+        file_put_contents('error.log', $message . PHP_EOL, FILE_APPEND);
     }
 }
 
@@ -16,54 +28,44 @@ const USERS = [
 ];
 
 class UserRepository {
-    public function findUser(string $id) {
+    public function findUser(string $id): ?string {
         return USERS[$id] ?? null;
     }
 
-    public function getUserById(string $id) {
-        $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
-            }
-
-            return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
+    public function getUserById(string $id): string {
+        $user = $this->findUser($id);
+        if (!$user) {
+            throw new UserNotFoundException($id);
         }
+
+        return $user;
     }
 }
 
 class Controller {
-    public function getCurrentUser(string $id) : ?string 
-    {
-        $log = new Logger();
+    private Logger $log;
+    private UserRepository $repository;
+
+    public function __construct() {
+        $this->log = new Logger();
+        $this->repository = new UserRepository();
+    }
+
+    public function getCurrentUser(string $id): ?string {
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
             
             return $user;
-        } catch (UserNotFoundException $e) {
-            $log->log("Controller, $id user is not found !");
-
-            return "User not found !";
+        } catch (UserNotFoundException $exception) {
+            $this->log->log($exception->errorMessage());
+            return "User not found!";
         } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
+            $this->log->log("Internal server error: {$exception->getMessage()}");
             return "Une erreur est survenue !";
         }
     }
 }
 
 $main = new Controller();
-print_r($main->getCurrentUser(7));
+echo $main->getCurrentUser("7");
