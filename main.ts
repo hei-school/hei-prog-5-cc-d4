@@ -17,17 +17,11 @@ class UserRepository {
     }
 
     getUserById(id: string){
-        try {
             const user = this.findUser(id)
             if(!user) {
                 throw new UserNotFoundExeption(`User with ${id} not found`)
             }
             return user
-        } 
-        catch (error) {
-            console.log('error',error);
-            return 
-        }
     }
 }
 
@@ -37,12 +31,15 @@ class Controller {
     getCurrentUser(id:string): string | void{
         try {
             const user = this.userRepository.getUserById(id)
-            if(!user){
-                throw new UserNotFoundExeption(`Controller, ${id} user is not found !`)
-            }
             return user
         } catch (error) {
-            console.log('Internal server error',error);
+            if(error instanceof UserNotFoundExeption){
+                console.log(error.message);
+                
+            }
+            else{
+                console.log('Internal server error',error);
+            }
             
         }
     }
