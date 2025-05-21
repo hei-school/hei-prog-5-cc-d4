@@ -9,13 +9,13 @@ class Logger {
     }
 }
 
-const USERS = [
-    "1" => "Julien",
-    "2" => "Rajerison",
-    "3" => "Jul",
-];
-
 class UserRepository {
+    private static const USERS = [
+        "1" => "Julien",
+        "2" => "Rajerison",
+        "3" => "Jul",
+    ];
+
     public function findUser(string $id) {
         return USERS[$id] ?? null;
     }
