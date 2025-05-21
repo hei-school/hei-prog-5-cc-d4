@@ -43,9 +43,10 @@ class Controller {
         try {
             $repository = new UserRepository();
             return $repository->getUserById($id);
-        } catch (UserNotFoundException) {
-            $log->log("Controller, $id user is not found !");
-            return "User not found !";
+        } catch (UserNotFoundException $e) {
+            $message = $e->getMessage();
+            $log->log($message);
+            return $message;
         }
     }
 }
