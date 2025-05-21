@@ -24,7 +24,8 @@ class UserRepository {
         try {
             $user = $this->findUser($id);
             if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
+                // Include id string to the exception message
+                throw new UserNotFoundException("User with id $id not found !");
             }
 
             return $user;
@@ -57,9 +58,10 @@ class Controller {
 
             return "User not found !";
         } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
+            // Use English in logs for better consistency and readability
+            $log->log("Internal server error, {$exception->getMessage()}"); 
 
-            return "Une erreur est survenue !";
+            return "An error occurred!";
         }
     }
 }
