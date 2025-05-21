@@ -9,58 +9,36 @@ class Logger {
     }
 }
 
-const USERS = [
-    "1" => "Julien",
-    "2" => "Rajerison",
-    "3" => "Jul",
-];
-
 class UserRepository {
+    private static const USERS = [
+        "1" => "Julien",
+        "2" => "Rajerison",
+        "3" => "Jul",
+    ];
+
     public function findUser(string $id) {
         return USERS[$id] ?? null;
     }
 
     public function getUserById(string $id) {
-        $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
-            }
-
-            return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
+        $user = $this->findUser($id);
+        if (!$user) {
+            throw new UserNotFoundException("User with $id not found !");
         }
+        return $user;
     }
 }
 
 class Controller {
     public function getCurrentUser(string $id) : ?string 
     {
-        $log = new Logger();
         try {
             $repository = new UserRepository();
-            $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
-            
-            return $user;
+            return $repository->getUserById($id);
         } catch (UserNotFoundException $e) {
+            $log = new Logger();
             $log->log("Controller, $id user is not found !");
-
-            return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
+            throw $e;
         }
     }
 }
