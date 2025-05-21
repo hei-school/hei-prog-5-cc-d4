@@ -21,17 +21,11 @@ class UserRepository {
 
     public function getUserById(string $id) {
         $log = new Logger();
-        try {
             $user = $this->findUser($id);
             if (!$user) {
                 throw new UserNotFoundException("User with $id not found !");
             }
             return $user;
-        } catch(Throwable $e) {
-            $log->log("UserRepository, {$e->getMessage()}");
-            throw new UserNotFoundException();
-            return "User not found !";
-        }
     }
 }
 
@@ -45,16 +39,11 @@ class Controller {
             if (!$user) {
                 throw new UserNotFoundException();
             }
-            
             return $user;
-        } catch (UserNotFoundException $e) {
-            $log->log("Controller, $id user is not found !");
-
-            return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
+        } catch (Throwable $e) {
+            $log->log(" {$e->getMessage()}");
+            throw new UserNotFoundException();
+            return "Un erreur est survenu !";
         }
     }
 }
