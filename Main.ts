@@ -30,22 +30,12 @@ class UserRepository {
     this.users = users;
   }
 
-  getUserById(id: number): User | void {
-    try {
-      const user = this.users.find(user => user.id === id);
-      if (!user) {
-        throw new UserNotFoundException(`User with ID ${id} not found`);
-      }
-      return user;
-    } catch (error) {
-      if (error instanceof UserNotFoundException) {
-        logWarning(error.message);
-        return;
-      } else if (error instanceof TypeError) {
-        logError("Type error occurred while finding user");
-        return;
-      }
+  getUserById(id: number): User {
+    const user = this.users.find(user => user.id === id);
+    if (!user) {
+      throw new UserNotFoundException(`User with ID ${id} not found`);
     }
+    return user;
   }
 }
 
@@ -55,9 +45,9 @@ class Controller {
       const userRepository = new UserRepository(USERS);
       const user = userRepository.getUserById(id);
       if (user) {
-        logSuccess(`User found: ${JSON.stringify(user)}`);
+        logSuccess(`User Name: ${user.name}`);
+        return user;
       }
-      return user;
     } catch (error) {
       if (error instanceof UserNotFoundException) {
         logError(error.message);
