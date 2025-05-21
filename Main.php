@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-
+// créer une exception personnalisée mais il n'est pas spécifié
 class UserNotFoundException extends Exception {}
 
 class Logger {
@@ -18,6 +18,7 @@ const USERS = [
 class UserRepository {
     public function findUser(string $id) {
         return USERS[$id] ?? null;
+        // Problème : USERS est une constante globale, il serait préférable d'utiliser une propriété de classe ou une source de données externe.
     }
 
     public function getUserById(string $id) {
@@ -32,14 +33,17 @@ class UserRepository {
         } catch (UserNotFoundException $exception) {
             $log->log($exception->getMessage());
 
-            return null;
+            return null; 
+        // userNotFoundExeption extends Exception donc c'est la même chose
         } catch (Exception $exception) {
             $log->log($exception->getMessage());
 
             return null;
         }
+        // Problème : Attraper une exception pour retourner null n'est pas optimal, il serait mieux de laisser l'exception remonter ou de gérer différemment.
     }
 }
+
 
 class Controller {
     public function getCurrentUser(string $id) : ?string 
@@ -50,6 +54,7 @@ class Controller {
             $user = $repository->getUserById($id);
             if (!$user) {
                 throw new UserNotFoundException();
+                // Problème : On lance une exception alors que getUserById a déjà géré l'absence d'utilisateur et retourné null.
             }
             
             return $user;
@@ -57,11 +62,13 @@ class Controller {
             $log->log("Controller, $id user is not found !");
 
             return "User not found !";
+
         } catch (Exception $exception) {
             $log->log("Internal serveur error, {$exception->getMessage()}");
 
             return "Une erreur est survenue !";
         }
+        // Problème : La gestion des exceptions est redondante entre UserRepository et Controller.
     }
 }
 
