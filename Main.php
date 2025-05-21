@@ -31,11 +31,6 @@ class UserRepository {
             return $user;
         } catch (UserNotFoundException $exception) {
             $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
             return null;
         }
     }
@@ -66,4 +61,5 @@ class Controller {
 }
 
 $main = new Controller();
-print_r($main->getCurrentUser(7));
+print_r($main->getCurrentUser("7"));
+
