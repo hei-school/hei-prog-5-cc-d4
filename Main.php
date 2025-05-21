@@ -18,18 +18,12 @@ class UserRepository {
     }
 
     public function getUserById(string $id) {
-        $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new Exception("User with $id not found !");
-            }
-
-            return $user;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-            return null;
+        $user = $this->findUser($id);
+        if (!$user) {
+            return "User not found !";
         }
+
+        return $user;
     }
 }
 
@@ -39,18 +33,18 @@ class Controller {
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
-            if (!$user) {
+            if ($user === "User not found !") {
                 $log->log("Controller, $id user is not found !");
-                return "User not found !";
             }
 
             return $user;
         } catch (Exception $exception) {
-            $log->log("Internal server error, {$exception->getMessage()}");
+            $log->log("Internal serveur error, {$exception->getMessage()}");
+
             return "Une erreur est survenue !";
         }
     }
 }
 
 $main = new Controller();
-print_r($main->getCurrentUser("7"));
+echo $main->getCurrentUser("7");
