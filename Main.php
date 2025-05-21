@@ -15,6 +15,7 @@ const USERS = [
 ];
 
 class UserRepository {
+    // Not necessary method
     public function findUser(string $id) {
         return USERS[$id] ?? null;
     }
