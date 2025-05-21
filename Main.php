@@ -30,12 +30,12 @@ class UserRepository {
             return $user;
         } catch (UserNotFoundException $exception) {
             $log->log($exception->getMessage());
-            
-            return null;
+            // Cela à retourner null alors que je veux l'affichage de l' exception sur l'user 
+            return "User not found $user!" + getMessage();
         } catch (Exception $exception) {
             $log->log($exception->getMessage());
-
-            return null;
+            // Cela à retourner null alors que je veux l'affichage de l' exception
+            return "Il y a une erreur dans cela : $user " + getMessage();
         }
     }
 }
