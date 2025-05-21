@@ -15,51 +15,33 @@ const USERS = [
 ];
 
 class UserRepository {
-    public function findUser(string $id) {
+    public function findUser(string $id): ?string {
         return USERS[$id] ?? null;
     }
 
-    public function getUserById(string $id) {
-        $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
-            }
-
-            return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-            
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
+    public function getUserById(string $id): string {
+        $user = $this->findUser($id);
+        if (!$user) {
+            throw new UserNotFoundException("User with ID $id not found!");
         }
+
+        return $user;
     }
 }
 
 class Controller {
-    public function getCurrentUser(string $id) : ?string 
-    {
+    public function getCurrentUser(string $id): ?string {
         $log = new Logger();
+        $repository = new UserRepository();
+
         try {
-            $repository = new UserRepository();
-            $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
-            
-            return $user;
+            return $repository->getUserById($id);
         } catch (UserNotFoundException $e) {
-            $log->log("Controller, $id user is not found !");
-
-            return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
+            $log->log("Controller: User with ID $id not found!");
+            return "User not found!";
+        } catch (Exception $e) {
+            $log->log("Internal server error: " . $e->getMessage());
+            return "Une erreur est survenue!";
         }
     }
 }
