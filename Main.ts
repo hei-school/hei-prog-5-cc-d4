@@ -30,7 +30,7 @@ class UserRepository {
     this.users = users;
   }
 
-  findById(id: number): User | void {
+  getUserById(id: number): User | void {
     try {
       const user = this.users.find(user => user.id === id);
       if (!user) {
@@ -50,10 +50,10 @@ class UserRepository {
 }
 
 class Controller {
-  getUserById(id: number): void {
+  getCurrentUser(id: number): void {
     try {
       const userRepository = new UserRepository(USERS);
-      const user = userRepository.findById(id);
+      const user = userRepository.getUserById(id);
       if (user) {
         logSuccess(`User found: ${JSON.stringify(user)}`);
       }
@@ -68,4 +68,4 @@ class Controller {
 }
 
 const main = new Controller();
-main.getUserById(4);
+main.getCurrentUser(4);
