@@ -33,10 +33,6 @@ class UserRepository {
             $log->log($exception->getMessage());
 
             return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
         }
     }
 }
@@ -45,23 +41,15 @@ class Controller {
     public function getCurrentUser(string $id) : ?string 
     {
         $log = new Logger();
-        try {
-            $repository = new UserRepository();
-            $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
-            
-            return $user;
-        } catch (UserNotFoundException $e) {
+        $repository = new UserRepository();
+        $user = $repository->getUserById($id);
+
+        if (!$user) {
             $log->log("Controller, $id user is not found !");
-
             return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
         }
+        
+        return $user;
     }
 }
 
