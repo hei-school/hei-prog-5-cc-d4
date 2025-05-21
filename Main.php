@@ -22,6 +22,7 @@ class UserRepository {
 
     public function getUserById(string $id) {
         $log = new Logger();
+        // This exception should be popagated not handled here
         try {
             $user = $this->findUser($id);
             if (!$user) {
