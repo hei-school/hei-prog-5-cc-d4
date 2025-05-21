@@ -13,18 +13,18 @@ const USERS = [
 ];
 
 class UserRepository {
-    public function findUser(string $id): ?string {
+    public function findUser(string $id) {
         return USERS[$id] ?? null;
     }
 
-    public function getUserById(string $id): ?string {
+    public function getUserById(string $id) {
         $log = new Logger();
         try {
             $user = $this->findUser($id);
             if (!$user) {
-                // Plutôt que d'utiliser une exception, on retourne null directement
-                return null;
+                throw new Exception("User with $id not found !");
             }
+
             return $user;
         } catch (Exception $exception) {
             $log->log($exception->getMessage());
@@ -39,15 +39,14 @@ class Controller {
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
-
             if (!$user) {
-                $log->log("Controller, user with ID $id not found!");
-                return "User not found!";
+                $log->log("Controller, $id user is not found !");
+                return "User not found !";
             }
 
             return $user;
         } catch (Exception $exception) {
-            $log->log("Internal server error: {$exception->getMessage()}");
+            $log->log("Internal server error, {$exception->getMessage()}");
             return "Une erreur est survenue !";
         }
     }
