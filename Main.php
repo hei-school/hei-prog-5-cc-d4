@@ -33,11 +33,6 @@ class UserRepository {
             $log->log($exception->getMessage());
             
             return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        }
     }
 }
 
