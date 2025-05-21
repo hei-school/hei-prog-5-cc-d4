@@ -66,4 +66,4 @@ class Controller {
 }
 
 $main = new Controller();
-print_r($main->getCurrentUser(7));
+print_r($main->getCurrentUser("7"));
