@@ -30,7 +30,7 @@ class UserRepository {
     this.users = users;
   }
 
-  getUserById(id: number): User | string | undefined {
+  getUserById(id: number): User | void {
     try {
       const user = this.users.find(user => user.id === id);
       if (!user) {
@@ -40,17 +40,17 @@ class UserRepository {
     } catch (error) {
       if (error instanceof UserNotFoundException) {
         logWarning(error.message);
-        return "User not found";
+        return;
       } else if (error instanceof TypeError) {
         logError("Type error occurred while finding user");
-        return "Type error occurred";
+        return;
       }
     }
   }
 }
 
 class Controller {
-  getCurrentUser(id: number): User | string | undefined {
+  getCurrentUser(id: number): User | void {
     try {
       const userRepository = new UserRepository(USERS);
       const user = userRepository.getUserById(id);
@@ -61,10 +61,8 @@ class Controller {
     } catch (error) {
       if (error instanceof UserNotFoundException) {
         logError(error.message);
-        return "User not found";
       } else {
         logError("An unexpected error occurred");
-        return "An unexpected error occurred";
       }
     }
   }
