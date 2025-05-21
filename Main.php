@@ -53,11 +53,8 @@ class Controller {
             }
             
             return $user;
-        } catch (UserNotFoundException $e) {
-            $log->log("Controller, $id user is not found !");
-
-            return "User not found !";
-        } catch (Exception $exception) {
+            //userNotFoundException removed
+        }  catch (Exception $exception) {
             $log->log("Internal serveur error, {$exception->getMessage()}");
 
             return "Une erreur est survenue !";
