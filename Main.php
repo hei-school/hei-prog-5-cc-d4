@@ -67,3 +67,9 @@ class Controller {
 
 $main = new Controller();
 print_r($main->getCurrentUser(7));
+
+// Erreur : L'argument passé à la méthode getCurrentUser devrait être une chaîne de caractères (string),
+// mais dans l'appel final ($main->getCurrentUser(7)), tu passes un entier (7). Cela entraînera une erreur
+// car la méthode attend un type 'string' en paramètre.
+
+// print_r($main->getCurrentUser("7"))
