@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 class UserNotFoundException extends Exception {}
 
@@ -22,46 +21,24 @@ class UserRepository {
 
     public function getUserById(string $id) {
         $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
-            }
 
-            return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
+        $user = $this->findUser($id);
+        if (!$user) {
+            $log->log("User with $id not found !");
             return null;
         }
+
+        return $user;
     }
 }
 
 class Controller {
     public function getCurrentUser(string $id) : ?string 
     {
-        $log = new Logger();
-        try {
-            $repository = new UserRepository();
-            $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
-            
-            return $user;
-        } catch (UserNotFoundException $e) {
-            $log->log("Controller, $id user is not found !");
+        $repository = new UserRepository();
+        $user = $repository->getUserById($id);
 
-            return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
-        }
+        return $user ?? "User not found !";
     }
 }
 
