@@ -41,9 +41,6 @@ class Controller {
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
             
             return $user;
         } catch (UserNotFoundException $e) {
