@@ -22,6 +22,7 @@ class UserRepository {
 
     public function getUserById(string $id) {
         $log = new Logger();
+        // This exception should be popagated not handled here
         try {
             $user = $this->findUser($id);
             if (!$user) {
@@ -45,7 +46,6 @@ class Controller {
     public function getCurrentUser(string $id) : ?string 
     {
         $log = new Logger();
-        // This part is redundant, exception is already handled in UserRepository->getUserById() and no longer thrown
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
