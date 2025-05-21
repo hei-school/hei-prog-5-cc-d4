@@ -26,7 +26,6 @@ class UserRepository {
             }
 
             return $user;
-        } 
         } catch (Exception $exception) {
             $log->log($exception->getMessage());
 
@@ -51,11 +50,7 @@ class Controller {
             $log->log("Controller, $id user is not found !");
 
             return "User not found !";
-        } catch (Exception $exception) {
-            $log->log("Internal serveur error, {$exception->getMessage()}");
-
-            return "Une erreur est survenue !";
-        }
+        } 
     }
 }
 
