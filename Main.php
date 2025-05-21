@@ -45,6 +45,7 @@ class Controller {
     public function getCurrentUser(string $id) : ?string 
     {
         $log = new Logger();
+        // This part is redundant, exception is already handled in UserRepository->getUserById() and no longer thrown
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
