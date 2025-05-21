@@ -16,28 +16,17 @@ const USERS = [
 ];
 
 class UserRepository {
-    public function findUser(string $id) {
+    private function findUser(string $id) {
         return USERS[$id] ?? null;
     }
 
     public function getUserById(string $id) {
         $log = new Logger();
-        try {
-            $user = $this->findUser($id);
-            if (!$user) {
-                throw new UserNotFoundException("User with $id not found !");
-            }
-
-            return $user;
-        } catch (UserNotFoundException $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
-        } catch (Exception $exception) {
-            $log->log($exception->getMessage());
-
-            return null;
+        $user = $this->findUser($id);
+        if (!$user) {
+            throw new UserNotFoundException("User with $id not found !");
         }
+        return $user;
     }
 }
 
@@ -48,9 +37,6 @@ class Controller {
         try {
             $repository = new UserRepository();
             $user = $repository->getUserById($id);
-            if (!$user) {
-                throw new UserNotFoundException();
-            }
             
             return $user;
         } catch (UserNotFoundException $e) {
